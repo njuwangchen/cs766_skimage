@@ -41,7 +41,7 @@ def get_points(origin):
 
 if __name__ == "__main__":
 	origin = io.imread('origin.jpg')
-	print get_points(origin)
+	print (get_points(origin))
 
 
 

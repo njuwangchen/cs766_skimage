@@ -5,7 +5,9 @@ import scipy.misc
 from PIL import Image
 from PyQt4 import QtCore, QtGui
 import ads
-
+import warp_ads
+from get_points import get_points
+from skimage import img_as_float
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -85,15 +87,23 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
 
     def advertising(self):
         if (not self.hasImage):
-            print "No input image!\n"
+            print ("No input image!")
             return
         if (not self.hasAds):
-            print "No input ads!\n"
+            print ("No input ads!")
             return
 
         # train and get the area of the monitor
+        src = get_points(self.oriImgData)
+        print (src)
 
         # warp ads
+        src = src[0:4]
+        warp = warp_ads.warpAds()
+        self.outputImgData = warp.warp_ads(img_as_float(self.oriImgData),img_as_float(self.adsData), src)
+        self.hasOutput = True
+
+        self.save_image("after_advertising.jpg")
 
 
     def load_image(self, filename, flag):
@@ -107,12 +117,12 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
         return data
 
 
-    def save_image(self, data, filename):
+    def save_image(self, filename):
         if (not self.hasOutput):
-            print "No output to save!"
+            print ("No output to save!")
             return
 
-        img = Image.fromarray(data)
+        img = Image.fromarray(self.outputImgData)
         img.save(filename)
 
 
