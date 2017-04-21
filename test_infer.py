@@ -78,6 +78,13 @@ print type(index_array_1), index_array_1.shape
 index_array_2 = np.argwhere(np.where(label_edge == 2, 1, 0))
 print type(index_array_2), index_array_2.shape
 
+left_most = np.amin(index_array_1, axis=0)[1]
+right_most = np.amax(index_array_1, axis=0)[1]
+up_most = np.amin(index_array_1, axis=0)[0]
+down_most = np.amax(index_array_1, axis=0)[0]
+
+print left_most, right_most, up_most, down_most
+
 '''
 fig, ax = plt.subplots()
 ax.scatter(index_array_1[:, 1], index_array_1[:, 0])
@@ -99,6 +106,7 @@ ax.set_xticks([])
 ax.set_yticks([])
 plt.show()
 '''
+
 '''
 max_len = 0
 max_contour = []
@@ -110,14 +118,30 @@ for n, contour in enumerate(contours):
 init = np.array(max_contour)
 '''
 
+'''
 fig, ax = plt.subplots()
-init = index_array_1
 
 ax.axis('image')
 ax.set_xticks([])
 ax.set_yticks([])
+'''
 
 img = rgb2gray(origin)
+
+num_of_points = 100
+
+up_line_x = np.linspace(left_most, right_most, num_of_points)
+up_line_y = np.ones(num_of_points)*up_most
+right_line_x = np.ones(num_of_points)*right_most
+right_line_y = np.linspace(up_most, down_most, num_of_points)
+down_line_x = np.linspace(right_most, left_most, num_of_points)
+down_line_y = np.ones(num_of_points)*down_most
+left_line_x = np.ones(num_of_points)*left_most
+left_line_y = np.linspace(down_most, up_most, num_of_points)
+
+X = np.concatenate((up_line_x, right_line_x, down_line_x, left_line_x), axis=0)
+Y = np.concatenate((up_line_y, right_line_y, down_line_y, left_line_y), axis=0)
+init = np.array([Y, X]).T
 
 if not new_scipy:
     print('You are using an old version of scipy. '
@@ -125,7 +149,7 @@ if not new_scipy:
           '0.14.0 and above.')
 
 if new_scipy:
-    snake = active_contour(img, init)
+    snake = active_contour(img, init, bc='periodic', w_line=0, w_edge=1, beta=0.2, alpha=0.02, convergence=0.5)
 
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
