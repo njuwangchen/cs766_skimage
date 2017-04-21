@@ -8,6 +8,7 @@ import ads
 import warp_ads
 from get_points import get_points
 from skimage import img_as_float
+from skimage import io
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -65,7 +66,7 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
         self.oriImg.setPixmap(scaledPixMap)
 
         # load data
-        self.riImgData = self.load_image(str(filename), 1)
+        self.oriImgData = self.load_image(str(filename), 1)
         self.hasImage = True
 
     def select_ads(self):
@@ -95,11 +96,13 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
 
         # train and get the area of the monitor
         src = get_points(self.oriImgData)
+        #src = np.array([[56, 100], [56, 186], [194, 178], [192, 97]])
         print (src)
 
         # warp ads
         src = src[0:4]
         warp = warp_ads.warpAds()
+        print (self.adsData.shape), (self.oriImgData.shape)
         self.outputImgData = warp.warp_ads(img_as_float(self.oriImgData),img_as_float(self.adsData), src)
         self.hasOutput = True
 
@@ -107,13 +110,17 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
 
 
     def load_image(self, filename, flag):
+        '''
         img = Image.open(filename)
         img.load()
         data = np.asarray(img, dtype = "int32")
+        '''
+        data = io.imread(filename)
         if (flag == 1):
             scipy.misc.imresize(data, (self.img_height, self.img_width))
         else:
             scipy.misc.imresize(data, (self.ads_height, self.ads_width))
+        print (data.shape)
         return data
 
 
@@ -122,8 +129,9 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
             print ("No output to save!")
             return
 
-        img = Image.fromarray(self.outputImgData)
-        img.save(filename)
+        #print (type(self.outputImgData), self.outputImgData.shape)
+        #img = Image.fromarray(self.outputImgData)
+        io.imsave(filename, self.outputImgData)
 
 
 
