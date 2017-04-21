@@ -18,10 +18,12 @@ from skimage.color import label2rgb
 import matplotlib.patches as mpatches
 
 def get_points(origin):
-	infer = infer(origin)
-	edges = feature.canny(infer)
-	label_edge, num_of_labels = label(edges, return_num=True, connectivity=2)
+	infer = infer_cnn(origin)
+	print type(infer), infer.shape
+        edges = feature.canny(infer)
+        label_edge, num_of_labels = label(edges, return_num=True, connectivity=2)
 	points_list = []
+        print "num_of_labels", num_of_labels
 	for i in range(1, num_of_labels+1):
 		index_array = np.argwhere(np.where(label_edge == i, 1, 0))
 		left_most = np.amin(index_array, axis=0)[1]
@@ -37,6 +39,7 @@ def get_points(origin):
 		points_list.append(left_down_point)
 		points_list.append(right_down_point)
 		points_list.append(right_up_point)
+                print len(points_list)
 	return np.array(points_list)
 
 if __name__ == "__main__":
