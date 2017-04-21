@@ -18,4 +18,4 @@ def infer_cnn(im):
 	out = net.blobs['score'].data[0].argmax(axis=0)
 
 	io.imsave('output.jpg', out)
-	return out
+	return np.array(out, float)
