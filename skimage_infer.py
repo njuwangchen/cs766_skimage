@@ -10,7 +10,7 @@ def infer_cnn(im):
 	in_ = in_.transpose((2,0,1))
 
 	# load net
-	net = caffe.Net('voc-fcn8s/deploy.prototxt', 'voc-fcn8s/fcn8s-heavy-pascal.caffemodel', caffe.TEST)
+	net = caffe.Net('deploy.prototxt', 'fcn8s.caffemodel', caffe.TEST)
 	# shape for input (data blob is N x C x H x W), set data
 	net.blobs['data'].reshape(1, *in_.shape)
 	net.blobs['data'].data[...] = in_

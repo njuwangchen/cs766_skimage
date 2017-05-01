@@ -95,8 +95,8 @@ class adsDialog(QtGui.QMainWindow, ads.Ui_AdsApp):
             return
 
         # train and get the area of the monitor
-        # src = get_points(self.oriImgData)
-        src = np.array([[56, 100], [56, 186], [194, 178], [192, 97]])
+        src = get_points(self.oriImgData)
+        # src = np.array([[56, 100], [56, 186], [194, 178], [192, 97]])
         print (src)
 
         # warp ads
