@@ -21,6 +21,7 @@ class warpAds:
     def warp_ads(self, img, ads, src):
         ads_width = ads.shape[1]
         ads_height = ads.shape[0]
+        ads = self.remove_all_zero_pix(ads)
         dst = np.array([[0, 0], [0, ads_height], [ads_width, ads_height], [ads_width, 0]])
 
         img_width = img.shape[1]
@@ -30,6 +31,12 @@ class warpAds:
         output = self.merge_img(img, rotated)
         return output
 
+    def remove_all_zero_pix(self, img):
+        mask = img[:,:,0] + img[:,:,1] + img[:,:,2]
+        mask_3d = np.stack((mask, mask, mask), axis=-1)
+        new_img = img
+        new_img[mask_3d==0] = 0.000001
+        return new_img
 
     """
     do ads tranformation
@@ -105,7 +112,7 @@ class warpAds:
 def test():
     #np.set_printoptions(threshold='nan')
 
-    ads = io.imread('../ads.png')
+    ads = io.imread('ads2.png')
     ads_float = img_as_float(ads)
 
     # src are the corner points in the source image
@@ -113,7 +120,7 @@ def test():
     src = np.array([[56, 100], [56, 186], [194, 178], [192, 97]])
 
     # merge
-    img = io.imread('../origin.jpg')
+    img = io.imread('origin.jpg')
     img_float = img_as_float(img)
 
     test = warpAds()

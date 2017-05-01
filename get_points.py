@@ -14,6 +14,7 @@ from skimage.transform import warp, AffineTransform
 from skimage.measure import label, regionprops
 from skimage.morphology import closing, square
 from skimage.color import label2rgb
+from skimage.measure import find_contours, approximate_polygon
 
 import matplotlib.patches as mpatches
 
@@ -42,9 +43,27 @@ def get_points(origin):
                 print len(points_list)
 	return np.array(points_list)
 
+def get_approx_contour(bw_img):
+
+    plt.imshow(bw_img)
+    for contour in find_contours(bw_img, 0):
+        coords = approximate_polygon(contour, tolerance=30)
+        plt.plot(coords[:,1], coords[:,0])
+
+    plt.show()
+
+
+def test_approx_contour():
+    img = io.imread("output.jpg")
+    img = rgb2gray(img)
+    get_approx_contour(img)
+
+
 if __name__ == "__main__":
-	origin = io.imread('origin.jpg')
-	print (get_points(origin))
+	#origin = io.imread('origin.jpg')
+	#print (get_points(origin))
+        #infer = infer_cnn(origin)
+        test_approx_contour()
 
 
 
