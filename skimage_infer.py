@@ -10,7 +10,7 @@ def infer_cnn(im):
 	in_ = in_.transpose((2,0,1))
 
 	# load net
-	net = caffe.Net('voc-fcn8s/deploy.prototxt', 'voc-fcn8s/fcn8s-heavy-pascal.caffemodel', caffe.TEST)
+	net = caffe.Net('deploy.prototxt', 'fcn8s.caffemodel', caffe.TEST)
 	# shape for input (data blob is N x C x H x W), set data
 	net.blobs['data'].reshape(1, *in_.shape)
 	net.blobs['data'].data[...] = in_
@@ -18,5 +18,9 @@ def infer_cnn(im):
 	net.forward()
 	out = net.blobs['score'].data[0].argmax(axis=0)
 
-	io.imsave('output.jpg', out)
+	io.imsave('origin_output_sp.jpg', out)
 	return np.array(out, float)
+
+if __name__ == "__main__":
+    im = io.imread("origin.jpg")
+    infer_cnn(im)
