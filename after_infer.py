@@ -14,7 +14,7 @@ scipy_version = list(map(int, split_version))
 new_scipy = scipy_version[0] > 0 or \
             (scipy_version[0] == 0 and scipy_version[1] >= 14)
 
-origin = io.imread('origin.jpg')
+origin = io.imread('1.jpg')
 print type(origin), origin.shape
 infer = io.imread('output.jpg')
 print type(infer), infer.shape

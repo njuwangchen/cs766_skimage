@@ -1,6 +1,7 @@
 from skimage import data, io, filters
 import numpy as np
 import caffe
+import sys
 
 def infer_cnn(im):
         print type(im), im.shape
@@ -18,9 +19,12 @@ def infer_cnn(im):
 	net.forward()
 	out = net.blobs['score'].data[0].argmax(axis=0)
 
-	io.imsave('origin_output_sp.jpg', out)
+	io.imsave('output.jpg', out)
 	return np.array(out, float)
 
 if __name__ == "__main__":
-    im = io.imread("origin.jpg")
+    if len(sys.argv) != 2:
+        print "Usage: python skimage_infer.py image_name"
+        exit()
+    im = io.imread(sys.argv[1])
     infer_cnn(im)
